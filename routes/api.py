@@ -1,5 +1,7 @@
-from flask import Blueprint, jsonify
-from models import Log
+from flask import Blueprint, jsonify, request
+import json
+from datetime import datetime
+from models import db, Log, WeatherData
 
 
 api_ = Blueprint("api", __name__)
@@ -9,27 +11,53 @@ api_ = Blueprint("api", __name__)
 def get_logged_days():
     logged_days = []
 
-    for date in Log.query.all():
-        if date not in logged_days:
-            logged_days.append(date)
+    for log in Log.query.all():
+        date_str = log.date.strftime("%m-%d-%Y")
 
-    return jsonify(days=[date.date.strftime("%m-%d-%Y") for date in logged_days])
+        if date_str not in logged_days:
+            logged_days.append(date_str)
+
+    return jsonify(days=logged_days)
 
 
 @api_.route("/api/weather_data/<day_date>", methods=["GET"])
 def get_weather_data(day_date):
     data = []
 
-    matching_days = [log for log in Log.query.all() if log.date.strftime("%m-%d-%Y") == day_date]
+    matching_logs = [log for log in Log.query.all() if log.date.strftime("%m-%d-%Y") == day_date]
 
-    if len(matching_days) > 0:
-        log_data = matching_days[0]
-
-        for data_entry in log_data.weather_data:
+    for matching_log in matching_logs:
+        for data_entry in matching_log.weather_data:
             data.append({
-                "time": log_data.date.strftime("%H:%M:%S"),
+                "time": matching_log.date.strftime("%H:%M:%S"),
                 "temperature": data_entry.temperature,
                 "humidity": data_entry.humidity,
             })
 
     return jsonify(data=data)
+
+
+@api_.route("/api/log", methods=["POST"])
+def add_station_log():
+    response = "Fail"
+
+    data = request.data
+
+    if data:
+        try:
+            parsed_data = json.loads(data.decode("utf-8"))
+
+            temp = parsed_data["temperature"]
+            humi = parsed_data["humidity"]
+
+            data_log = Log(date=datetime.now(), weather_data=[WeatherData(temperature=temp, humidity=humi)])
+
+            db.session.add(data_log)
+            db.session.commit()
+
+            response = "OK"
+
+        except:
+            pass
+
+    return jsonify(status=response)
