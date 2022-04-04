@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request
 import json
 from datetime import datetime
-from models import db, Log, WeatherData
+from models import Log, WeatherData
+from utils import db_utils
 
 
 api_ = Blueprint("api", __name__)
@@ -39,7 +40,7 @@ def get_weather_data(day_date):
 
 @api_.route("/api/log", methods=["POST"])
 def add_station_log():
-    response = "Fail"
+    response = "FAIL"
 
     data = request.data
 
@@ -52,8 +53,7 @@ def add_station_log():
 
             data_log = Log(date=datetime.now(), weather_data=[WeatherData(temperature=temp, humidity=humi)])
 
-            db.session.add(data_log)
-            db.session.commit()
+            db_utils.add_object_to_db(data_log)
 
             response = "OK"
 
