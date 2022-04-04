@@ -5,7 +5,7 @@ import os
 
 def create_app():
     app = Flask(__name__, instance_relative_config=False)
-    app.config.from_object('config.Config')
+    app.config.from_object("config.AppConfig")
     app.secret_key = os.urandom(25)
 
     db.init_app(app)
