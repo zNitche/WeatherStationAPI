@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, make_response, abort
 import json
 from datetime import datetime
 from models import WeatherLog
@@ -19,7 +19,7 @@ def get_logged_weather_data_days():
         if date_str not in logged_days:
             logged_days.append(date_str)
 
-    return jsonify(days=logged_days)
+    return make_response(jsonify(days=logged_days), 200)
 
 
 @api_.route("/api/weather_data/<day_date>", methods=["GET"])
@@ -35,12 +35,12 @@ def get_weather_data(day_date):
             DataConsts.HUMIDITY_KEY_NAME: matching_log.humidity,
         })
 
-    return jsonify(data=data)
+    return make_response(jsonify(data=data), 200)
 
 
 @api_.route("/api/log/weather_data", methods=["POST"])
 def add_weather_log():
-    response = ApiConsts.POST_FAILED_MESSAGE
+    response = make_response(jsonify(status=ApiConsts.POST_FAILED_MESSAGE), 400)
 
     data = request.data
 
@@ -56,9 +56,12 @@ def add_weather_log():
 
                 db_utils.add_object_to_db(data_log)
 
-                response = ApiConsts.POST_SUCCESS_MESSAGE
+                response = make_response(jsonify(status=ApiConsts.POST_SUCCESS_MESSAGE), 200)
 
-        except:
+            else:
+                abort(401)
+
+        except (json.decoder.JSONDecodeError, KeyError):
             pass
 
-    return jsonify(status=response)
+    return response
