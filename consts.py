@@ -3,6 +3,9 @@ class ApiConsts:
     POST_FAILED_MESSAGE = "FAIL"
     POST_SUCCESS_MESSAGE = "OK"
 
+    AUTH_TOKEN_KEY_NAME = "auth_token"
+    AUTH_TOKEN = "test_auth_token"
+
 
 class DataConsts:
     TIME_KEY_NAME = "time"

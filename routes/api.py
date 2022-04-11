@@ -9,8 +9,8 @@ from consts import ApiConsts, DataConsts, DateConsts
 api_ = Blueprint("api", __name__)
 
 
-@api_.route("/api/days", methods=["GET"])
-def get_logged_days():
+@api_.route("/api/weather_data", methods=["GET"])
+def get_logged_weather_data_days():
     logged_days = []
 
     for log in WeatherLog.query.all():
@@ -38,7 +38,7 @@ def get_weather_data(day_date):
     return jsonify(data=data)
 
 
-@api_.route("/api/log/weather", methods=["POST"])
+@api_.route("/api/log/weather_data", methods=["POST"])
 def add_weather_log():
     response = ApiConsts.POST_FAILED_MESSAGE
 
@@ -48,14 +48,15 @@ def add_weather_log():
         try:
             parsed_data = json.loads(data.decode(ApiConsts.REQUESTS_ENCODING))
 
-            temperature = parsed_data[DataConsts.TEMPERATURE_KEY_NAME]
-            humidity = parsed_data[DataConsts.HUMIDITY_KEY_NAME]
+            if parsed_data[ApiConsts.AUTH_TOKEN_KEY_NAME] == ApiConsts.AUTH_TOKEN:
+                temperature = parsed_data[DataConsts.TEMPERATURE_KEY_NAME]
+                humidity = parsed_data[DataConsts.HUMIDITY_KEY_NAME]
 
-            data_log = WeatherLog(date=datetime.now(), temperature=temperature, humidity=humidity)
+                data_log = WeatherLog(date=datetime.now(), temperature=temperature, humidity=humidity)
 
-            db_utils.add_object_to_db(data_log)
+                db_utils.add_object_to_db(data_log)
 
-            response = ApiConsts.POST_SUCCESS_MESSAGE
+                response = ApiConsts.POST_SUCCESS_MESSAGE
 
         except:
             pass
