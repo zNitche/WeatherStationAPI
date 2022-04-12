@@ -5,6 +5,8 @@ API for Raspberry Pi Pico powered weather stations
 ---
 
 ### Setup Docker container
+#### Note: for Raspberry Pi use `python:3.9-buster` as Docker image
+
    1. Build image: 
    ```
    sudo docker build -t weather_station_api .
