@@ -3,6 +3,7 @@ import os
 
 def get_config():
     args = {
+        "APP_DB_DATA_PATH": "",
         "AUTH_TOKEN": "test_auth_token"
     }
 
