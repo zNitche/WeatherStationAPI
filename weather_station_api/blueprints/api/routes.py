@@ -2,6 +2,7 @@ from flask import Blueprint, jsonify, request, make_response, abort
 from weather_station_api import models
 from weather_station_api.utils import db_utils, data_utils
 from weather_station_api.consts import DateConsts
+from weather_station_api.app_modules import decorators
 
 
 api = Blueprint("api", __name__, template_folder="templates", static_folder="static", url_prefix="/api")
@@ -61,6 +62,7 @@ def get_logs_data_by_day_and_type(log_type, day_date):
 
 
 @api.route("/logs/<log_type>/add", methods=["POST"])
+@decorators.auth_token_required
 def add_weather_log(log_type):
     log_by_type = models.LogBase.get_subclass_by_type(log_type)
 
