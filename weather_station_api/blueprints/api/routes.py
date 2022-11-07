@@ -68,7 +68,7 @@ def add_weather_log(log_type):
 
     if log_by_type:
         json_data = request.json
-        log = data_utils.create_from_struct(log_by_type, json_data)
+        log = data_utils.create_log_from_struct(log_by_type, json_data)
 
         if log:
             db_utils.add_object_to_db(log)

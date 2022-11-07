@@ -1,12 +1,6 @@
 from weather_station_api.consts import DataConsts, DateConsts
 
 
-def get_value_from_dict(key, dict):
-    value = dict[key] if key in dict.keys() else None
-
-    return value
-
-
 def get_logged_days(model):
     days = []
 
@@ -25,7 +19,7 @@ def get_logged_data_struct(model):
     return struct
 
 
-def create_from_struct(model, struct):
-    value = get_value_from_dict(DataConsts.VALUE_KEY_NAME, struct)
+def create_log_from_struct(model, struct):
+    value = struct.get(DataConsts.VALUE_KEY_NAME)
 
     return model(value=value)

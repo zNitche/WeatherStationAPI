@@ -23,7 +23,7 @@ class LogBase:
 
 class TempLog(db.Model, LogBase):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     value = db.Column(db.Float, nullable=False)
 
     @staticmethod
@@ -33,7 +33,7 @@ class TempLog(db.Model, LogBase):
 
 class HumidityLog(db.Model, LogBase):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     value = db.Column(db.Float, nullable=False)
 
     @staticmethod
@@ -43,7 +43,7 @@ class HumidityLog(db.Model, LogBase):
 
 class BatteryVoltageLog(db.Model, LogBase):
     id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
     value = db.Column(db.Float, nullable=False)
 
     @staticmethod
