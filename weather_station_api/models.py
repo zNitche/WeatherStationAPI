@@ -1,9 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from weather_station_api.consts import DataConsts
-
-
-db = SQLAlchemy()
+from weather_station_api import db
 
 
 class LogBase:
