@@ -25,9 +25,11 @@ def init_migrations(app):
 def register_blueprints(app):
     from weather_station_api.blueprints.api.routes import api
     from weather_station_api.blueprints.errors.routes import errors
+    from weather_station_api.blueprints.dashboard.routes import dashboard
 
     app.register_blueprint(api)
     app.register_blueprint(errors)
+    app.register_blueprint(dashboard)
 
 
 def create_app(app_config=AppConfig):
