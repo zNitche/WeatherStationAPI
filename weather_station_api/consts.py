@@ -1,5 +1,7 @@
 class ApiConsts:
     AUTH_TOKEN_KEY_NAME = "auth_token"
+    LOG_TYPE_KEY_NAME = "type"
+    LOG_CONTENT_KEY_NAME = "content"
 
 
 class DataConsts:
