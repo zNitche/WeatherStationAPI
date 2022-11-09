@@ -3,7 +3,6 @@ from weather_station_api import models
 from weather_station_api.consts import PaginationConsts
 from weather_station_api.utils import data_utils
 
-
 dashboard = Blueprint("dashboard", __name__, template_folder="templates", static_folder="static", url_prefix="/")
 
 
@@ -26,17 +25,17 @@ def preview_logs_by_type(log_type, page_id):
     log_by_type = models.LogBase.get_subclass_by_type(log_type)
 
     if log_by_type:
-        paginated_data = log_by_type.query.order_by(log_by_type.date.asc())
-        paginated_data = paginated_data.paginate(page=page_id,
-                                                 per_page=PaginationConsts.LOGS_DATA_PER_PAGE)
+        paginated_days_data = models.LoggedDay.query.order_by(models.LoggedDay.date.asc())
+        paginated_days_data = paginated_days_data.paginate(page=page_id,
+                                                           per_page=PaginationConsts.LOGGED_DAY_PER_PAGE)
 
-        daily_logs_struct = data_utils.get_daily_logs_struct(paginated_data.items)
+        daily_logs_struct = data_utils.get_daily_logs_struct(paginated_days_data.items, log_type)
         serialized_daily_logs_struct = data_utils.serialize_daily_logs_struct(daily_logs_struct)
         serialized_daily_logs_struct.reverse()
 
         return render_template("log_graphs.html",
                                log_type=log_type,
-                               logs_pagination=paginated_data,
+                               logs_pagination=paginated_days_data,
                                paginated_daily_data=serialized_daily_logs_struct)
 
     else:

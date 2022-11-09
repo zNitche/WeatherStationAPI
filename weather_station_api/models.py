@@ -3,7 +3,32 @@ from weather_station_api.consts import DataConsts
 from weather_station_api import db
 
 
-class LogBase:
+class LoggedDay(db.Model):
+    __tablename__ = "logged_days"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.now)
+
+    logs = db.relationship("LogBase", backref="day", lazy=True)
+
+    def get_logs_by_type(self, type):
+        logs = LogBase.query.filter_by(day_id=self.id, log_type=type).all()
+
+        return logs
+
+
+class LogBase(db.Model):
+    __tablename__ = "logs_base"
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
+    log_type = db.Column(db.String(64), nullable=False)
+    value = db.Column(db.Float, nullable=False)
+
+    day_id = db.Column(db.Integer, db.ForeignKey("logged_days.id"), nullable=False)
+
+    __mapper_args__ = {'polymorphic_on': log_type}
+
     @staticmethod
     def get_type():
         return None
@@ -24,11 +49,17 @@ class LogBase:
 
         return subclass_by_type
 
+    @staticmethod
+    def create_from_struct(struct, day_id):
+        return None
 
-class TempLog(db.Model, LogBase):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    value = db.Column(db.Float, nullable=False)
+
+class TempLog(LogBase):
+    __tablename__ = "temperature_logs"
+
+    __mapper_args__ = {
+        "polymorphic_identity": DataConsts.TEMPERATURE_TYPE,
+    }
 
     @staticmethod
     def get_type():
@@ -38,11 +69,23 @@ class TempLog(db.Model, LogBase):
     def get_display_name():
         return DataConsts.TEMPERATURE_DISPLAY_NAME
 
+    @staticmethod
+    def create_from_struct(struct, day_id):
+        model = None
+        value = struct.get(DataConsts.VALUE_KEY_NAME)
 
-class HumidityLog(db.Model, LogBase):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    value = db.Column(db.Float, nullable=False)
+        if value:
+            model = TempLog(value=value, day_id=day_id)
+
+        return model
+
+
+class HumidityLog(LogBase):
+    __tablename__ = "humidity_logs"
+
+    __mapper_args__ = {
+        "polymorphic_identity": DataConsts.HUMIDITY_TYPE,
+    }
 
     @staticmethod
     def get_type():
@@ -52,11 +95,23 @@ class HumidityLog(db.Model, LogBase):
     def get_display_name():
         return DataConsts.HUMIDITY_DISPLAY_NAME
 
+    @staticmethod
+    def create_from_struct(struct, day_id):
+        model = None
+        value = struct.get(DataConsts.VALUE_KEY_NAME)
 
-class BatteryVoltageLog(db.Model, LogBase):
-    id = db.Column(db.Integer, primary_key=True)
-    date = db.Column(db.DateTime, nullable=False, default=datetime.now)
-    value = db.Column(db.Float, nullable=False)
+        if value:
+            model = HumidityLog(value=value, day_id=day_id)
+
+        return model
+
+
+class BatteryVoltageLog(LogBase):
+    __tablename__ = "battery_voltage_logs"
+
+    __mapper_args__ = {
+        "polymorphic_identity": DataConsts.BATTER_VOLTAGE_TYPE_NAME,
+    }
 
     @staticmethod
     def get_type():
@@ -65,3 +120,13 @@ class BatteryVoltageLog(db.Model, LogBase):
     @staticmethod
     def get_display_name():
         return DataConsts.BATTER_VOLTAGE_DISPLAY_NAME
+
+    @staticmethod
+    def create_from_struct(struct, day_id):
+        model = None
+        value = struct.get(DataConsts.VALUE_KEY_NAME)
+
+        if value:
+            model = BatteryVoltageLog(value=value, day_id=day_id)
+
+        return model

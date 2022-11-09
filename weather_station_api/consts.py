@@ -22,5 +22,4 @@ class DateConsts:
 
 
 class PaginationConsts:
-    # 7 days * 24 logs per day
-    LOGS_DATA_PER_PAGE = 7 * 24
+    LOGGED_DAY_PER_PAGE = 7

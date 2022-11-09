@@ -1,8 +1,9 @@
 from flask import Blueprint, jsonify, request, make_response, abort
 from weather_station_api import models
 from weather_station_api.utils import db_utils, data_utils
-from weather_station_api.consts import DateConsts, ApiConsts
+from weather_station_api.consts import ApiConsts, DateConsts
 from weather_station_api.app_modules import decorators
+from datetime import datetime
 
 
 api = Blueprint("api", __name__, template_folder="templates", static_folder="static", url_prefix="/api")
@@ -50,15 +51,14 @@ def get_logs_data_by_day_and_type(log_type, day_date):
     log_by_type = models.LogBase.get_subclass_by_type(log_type)
 
     if log_by_type:
-        all_data = data_utils.get_logged_data_struct(log_by_type)
+        log_day = data_utils.get_logged_day(day_date)
 
-        picked_data = {str(date): value for date, value in all_data.items() if
-                       date.strftime(DateConsts.DAY_FORMATTING) == day_date}
+        if log_day:
+            picked_data = {str(log.date): log.value for log in log_day.get_logs_by_type(log_type)}
 
-        return make_response(jsonify(picked_data), 200)
+            return make_response(jsonify(picked_data), 200)
 
-    else:
-        abort(404)
+    abort(404)
 
 
 @api.route("/logs/<log_type>/add", methods=["POST"])
@@ -67,9 +67,13 @@ def add_weather_log(log_type):
     log_by_type = models.LogBase.get_subclass_by_type(log_type)
 
     if log_by_type:
-        log = data_utils.create_log_from_struct(log_by_type, request.json)
+        current_date = datetime.now()
 
-        if log:
+        log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
+        log = log_by_type.create_from_struct(request.json, log_day.id)
+
+        if log and log_day:
+            db_utils.add_object_to_db(log_day)
             db_utils.add_object_to_db(log)
 
             return make_response({}, 200)
@@ -91,10 +95,16 @@ def add_many_weather_logs():
             log_by_type = models.LogBase.get_subclass_by_type(log_struct.get(ApiConsts.LOG_TYPE_KEY_NAME))
 
             if log_by_type:
-                log = data_utils.create_log_from_struct(log_by_type, log_struct.get(ApiConsts.LOG_CONTENT_KEY_NAME))
+                current_date = datetime.now()
 
-                if log:
+                log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
+                log = log_by_type.create_from_struct(request.json, log_day.id)
+
+                if log and log_day:
+                    db_utils.add_object_to_db(log_day)
                     db_utils.add_object_to_db(log)
+
+                    return make_response({}, 200)
 
             else:
                 abort(400)
