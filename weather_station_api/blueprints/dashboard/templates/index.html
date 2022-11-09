@@ -1,15 +1,12 @@
 {% extends "base_templates/page_layout_base.html" %}
 {% block page_content %}
 
-<div class="content-item">
-    <div class="item-header">
-        <h2>
-            Title
-        </h2>
-    </div>
-    <div class="item-content">
-        Data
-    </div>
-</div>
+{% for log_type in logs_types %}
+    <a class="content-item-button" href="{{ url_for('dashboard.preview_logs_by_type', log_type=log_type['name']) }}">
+        <div class="content-item">
+            {{ log_type['display_name'] }}
+        </div>
+    </a>
+{% endfor %}
 
 {% endblock %}

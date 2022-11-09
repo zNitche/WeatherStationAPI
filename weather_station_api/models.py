@@ -9,6 +9,10 @@ class LogBase:
         return None
 
     @staticmethod
+    def get_display_name():
+        return None
+
+    @staticmethod
     def get_subclass_by_type(log_type):
         subclass_by_type = None
 
@@ -30,6 +34,10 @@ class TempLog(db.Model, LogBase):
     def get_type():
         return DataConsts.TEMPERATURE_TYPE
 
+    @staticmethod
+    def get_display_name():
+        return DataConsts.TEMPERATURE_DISPLAY_NAME
+
 
 class HumidityLog(db.Model, LogBase):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,6 +48,10 @@ class HumidityLog(db.Model, LogBase):
     def get_type():
         return DataConsts.HUMIDITY_TYPE
 
+    @staticmethod
+    def get_display_name():
+        return DataConsts.HUMIDITY_DISPLAY_NAME
+
 
 class BatteryVoltageLog(db.Model, LogBase):
     id = db.Column(db.Integer, primary_key=True)
@@ -49,3 +61,7 @@ class BatteryVoltageLog(db.Model, LogBase):
     @staticmethod
     def get_type():
         return DataConsts.BATTER_VOLTAGE_TYPE_NAME
+
+    @staticmethod
+    def get_display_name():
+        return DataConsts.BATTER_VOLTAGE_DISPLAY_NAME

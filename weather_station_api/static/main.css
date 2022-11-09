@@ -1,5 +1,5 @@
 body {
-    background-color: #f5f5f5;
+    background-color: #E1E2E2;
     color: #000000;
     margin: 0;
 }
@@ -31,7 +31,7 @@ body {
     flex-direction: column;
     flex-wrap: wrap;
     width: 100%;
-    background-color: #1c335c;
+    background-color: #1D2228;
     color: #ffffff;
     align-items: center;
     justify-content: center;
@@ -89,6 +89,10 @@ body {
     align-items: normal;
 }
 
+.item-content {
+    width: 100%;
+}
+
 .content-item-content {
     display: flex;
     flex-direction: column;
@@ -103,6 +107,14 @@ body {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-between;
+}
+
+.content-item-button {
+    width: 100%;
+    text-decoration: none;
+    color: #000000;
+    display: flex;
+    justify-content: center;
 }
 
 .content-item-button .content-item:hover {

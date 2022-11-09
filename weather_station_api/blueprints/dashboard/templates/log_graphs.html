@@ -1,0 +1,27 @@
+{% extends "base_templates/page_layout_base.html" %}
+{% block page_content %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="{{url_for('static', filename='js/graphs.js')}}"></script>
+<script>
+    createGraphs('{{ paginated_daily_data|tojson }}');
+</script>
+
+{% if logs_pagination.has_next or logs_pagination.has_prev %}
+    <div class="pagination-controls">
+        {% if logs_pagination.has_prev %}
+            <a class="pagination-controls-item" href="{{ url_for('dashboard.preview_logs_by_type',
+             page_id=logs_pagination.prev_num, log_type=log_type) }}">
+                Prev
+            </a>
+        {% endif %}
+        {% if logs_pagination.has_next %}
+            <a class="pagination-controls-item" href="{{ url_for('dashboard.preview_logs_by_type',
+             page_id=logs_pagination.next_num, log_type=log_type) }}">
+                Next
+            </a>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% endblock %}
