@@ -13,3 +13,11 @@ function sendPost(targetURL, jsonPayload, actionHandler) {
     }).then((response)=>response.json())
     .then((responseJson)=>{actionHandler(responseJson)});
 }
+
+
+function displayDate(dateContainerId) {
+    const currentDate = new Date();
+	const formattedCurrentDate = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear()
+
+	document.getElementById(dateContainerId).innerHTML = formattedCurrentDate;
+}
