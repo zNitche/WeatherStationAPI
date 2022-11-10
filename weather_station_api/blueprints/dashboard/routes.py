@@ -1,9 +1,8 @@
 from flask import Blueprint, render_template, abort
 from weather_station_api import models
 from weather_station_api.consts import PaginationConsts
-from weather_station_api.utils import data_utils
-from config import AppConfig
-import os
+from weather_station_api.utils import data_utils, js_modules_utils
+from config import ModulesConfig
 
 
 dashboard = Blueprint("dashboard", __name__, template_folder="templates", static_folder="static", url_prefix="/")
@@ -35,14 +34,13 @@ def preview_logs_by_type(log_type, page_id):
         daily_logs_struct = data_utils.get_daily_logs_struct(paginated_days_data.items, log_type)
         serialized_daily_logs_struct = data_utils.serialize_daily_logs_struct(daily_logs_struct)
 
-        local_chartjs_exists = os.path.exists(os.path.join(AppConfig.CURRENT_DIR,
-                                                           "weather_station_api", "static", "js", "libs", "chart.js"))
+        chart_js_path = js_modules_utils.get_lib_src(ModulesConfig.CHART_JS_NAME)
 
         return render_template("log_graphs.html",
                                log_type=log_type,
                                logs_pagination=paginated_days_data,
                                paginated_daily_data=serialized_daily_logs_struct,
-                               local_chartjs_exists=local_chartjs_exists)
+                               chart_js_path=chart_js_path)
 
     else:
         abort(404)

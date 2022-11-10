@@ -2,13 +2,8 @@
 {% block page_content %}
 
 {% if paginated_daily_data|length > 0 %}
-    {% if local_chartjs_exists %}
-        <script src="{{url_for('static', filename='js/libs/chart.js')}}"></script>
-    {% else %}
-        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
-    {% endif %}
-
-    <script src="{{url_for('static', filename='js/graphs.js')}}"></script>
+    <script src="{{ chart_js_path }}"></script>
+    <script src="{{ url_for('static', filename='js/graphs.js') }}"></script>
     <script>
         createGraphs('{{ paginated_daily_data|tojson }}');
     </script>
