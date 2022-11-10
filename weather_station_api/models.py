@@ -9,15 +9,15 @@ class LoggedDay(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, unique=False, nullable=False, default=datetime.now)
 
-    logs = db.relationship("LogBase", backref="day", lazy=True)
+    logs = db.relationship("Log", backref="day", lazy=True)
 
     def get_logs_by_type(self, type):
-        logs = LogBase.query.filter_by(day_id=self.id, log_type=type).all()
+        logs = Log.query.filter_by(day_id=self.id, log_type=type).all()
 
         return logs
 
 
-class LogBase(db.Model):
+class Log(db.Model):
     __tablename__ = "logs_base"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -41,7 +41,7 @@ class LogBase(db.Model):
     def get_subclass_by_type(log_type):
         subclass_by_type = None
 
-        for subclass in LogBase.__subclasses__():
+        for subclass in Log.__subclasses__():
             if subclass.get_type() == log_type:
                 subclass_by_type = subclass
 
@@ -54,7 +54,7 @@ class LogBase(db.Model):
         return None
 
 
-class TempLog(LogBase):
+class TempLog(Log):
     __tablename__ = "temperature_logs"
 
     __mapper_args__ = {
@@ -80,7 +80,7 @@ class TempLog(LogBase):
         return model
 
 
-class HumidityLog(LogBase):
+class HumidityLog(Log):
     __tablename__ = "humidity_logs"
 
     __mapper_args__ = {
@@ -106,7 +106,7 @@ class HumidityLog(LogBase):
         return model
 
 
-class BatteryVoltageLog(LogBase):
+class BatteryVoltageLog(Log):
     __tablename__ = "battery_voltage_logs"
 
     __mapper_args__ = {

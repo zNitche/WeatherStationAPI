@@ -12,7 +12,7 @@ dashboard = Blueprint("dashboard", __name__, template_folder="templates", static
 def home():
     types = []
 
-    for log in models.LogBase.__subclasses__():
+    for log in models.Log.__subclasses__():
         types.append({
             "name": log.get_type(),
             "display_name": log.get_display_name()
@@ -24,7 +24,7 @@ def home():
 @dashboard.route("/logs/<log_type>", defaults={"page_id": 1})
 @dashboard.route("/logs/<log_type>/<int:page_id>")
 def preview_logs_by_type(log_type, page_id):
-    log_by_type = models.LogBase.get_subclass_by_type(log_type)
+    log_by_type = models.Log.get_subclass_by_type(log_type)
 
     if log_by_type:
         paginated_days_data = models.LoggedDay.query.order_by(models.LoggedDay.date.desc())

@@ -3,6 +3,15 @@ from weather_station_api import models
 from weather_station_api.utils import db_utils
 
 
+def get_logs_types():
+    types = []
+
+    for log in models.Log.__subclasses__():
+        types.append(log.get_type())
+
+    return types
+
+
 def get_logged_day(day_date):
     log_day = [logged_day for logged_day in models.LoggedDay.query.all()
                if logged_day.date.strftime(DateConsts.DAY_FORMATTING) == day_date]
