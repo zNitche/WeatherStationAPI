@@ -55,7 +55,7 @@ function createDatasetFromData(data) {
 }
 
 
-function createGraph(date, datasets) {
+function createGraph(date, dataset) {
     const graphContainer = document.getElementById(date);
 
     let graphCanvas = document.createElement("canvas");
@@ -66,13 +66,13 @@ function createGraph(date, datasets) {
     new Chart(graphCanvas.getContext("2d"), {
           type: "line",
           data: {
-            labels: datasets.x,
+            labels: dataset.x,
             datasets: [{
               fill: false,
               lineTension: 0,
               backgroundColor: "#FB8122",
                   borderColor: "#1D2228",
-              data: datasets.y
+              data: dataset.y
             }]
           },
           options: {
