@@ -69,8 +69,7 @@ def add_weather_log(log_type):
         log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
         log = log_by_type.create_from_struct(request.json, log_day.id)
 
-        if log and log_day:
-            db_utils.add_object_to_db(log_day)
+        if log:
             db_utils.add_object_to_db(log)
 
             return make_response({}, 200)
@@ -97,8 +96,7 @@ def add_many_weather_logs():
                 log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
                 log = log_by_type.create_from_struct(request.json, log_day.id)
 
-                if log and log_day:
-                    db_utils.add_object_to_db(log_day)
+                if log:
                     db_utils.add_object_to_db(log)
 
                     return make_response({}, 200)
