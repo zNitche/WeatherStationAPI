@@ -1,3 +1,4 @@
+#FROM python:3.9-buster for RaspberryPi
 FROM python:3.9
 
 COPY . /WeatherStationAPI
