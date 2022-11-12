@@ -1,3 +1,5 @@
+import json
+
 from flask import Blueprint, jsonify, request, make_response, abort
 from weather_station_api import models
 from weather_station_api.utils import db_utils, data_utils
@@ -67,7 +69,9 @@ def add_weather_log(log_type):
         current_date = datetime.now()
 
         log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
-        log = log_by_type.create_from_struct(request.json, log_day.id)
+        request_data = request.json if request.is_json else json.loads(request.data)
+
+        log = log_by_type.create_from_struct(request_data, log_day.id)
 
         if log:
             db_utils.add_object_to_db(log)
@@ -94,7 +98,9 @@ def add_many_weather_logs():
                 current_date = datetime.now()
 
                 log_day = data_utils.get_logged_day(current_date.strftime(DateConsts.DAY_FORMATTING))
-                log = log_by_type.create_from_struct(request.json, log_day.id)
+                request_data = request.json if request.is_json else json.loads(request.data)
+
+                log = log_by_type.create_from_struct(request_data, log_day.id)
 
                 if log:
                     db_utils.add_object_to_db(log)
