@@ -18,7 +18,7 @@ class LoggedDay(db.Model):
 
 
 class Log(db.Model):
-    __tablename__ = "logs_base"
+    __tablename__ = "logs"
 
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.now)
@@ -57,6 +57,8 @@ class Log(db.Model):
 class TempLog(Log):
     __tablename__ = "temperature_logs"
 
+    id = db.Column(db.Integer, db.ForeignKey("logs.id"), primary_key=True)
+
     __mapper_args__ = {
         "polymorphic_identity": DataConsts.TEMPERATURE_TYPE,
     }
@@ -83,6 +85,8 @@ class TempLog(Log):
 class HumidityLog(Log):
     __tablename__ = "humidity_logs"
 
+    id = db.Column(db.Integer, db.ForeignKey("logs.id"), primary_key=True)
+
     __mapper_args__ = {
         "polymorphic_identity": DataConsts.HUMIDITY_TYPE,
     }
@@ -108,6 +112,8 @@ class HumidityLog(Log):
 
 class BatteryVoltageLog(Log):
     __tablename__ = "battery_voltage_logs"
+
+    id = db.Column(db.Integer, db.ForeignKey("logs.id"), primary_key=True)
 
     __mapper_args__ = {
         "polymorphic_identity": DataConsts.BATTER_VOLTAGE_TYPE_NAME,
