@@ -32,14 +32,12 @@ def preview_logs_by_type(log_type, page_id):
                                                            per_page=PaginationConsts.LOGGED_DAY_PER_PAGE)
 
         daily_logs_struct = data_utils.get_daily_logs_struct(paginated_days_data.items, log_type)
-        serialized_daily_logs_struct = data_utils.serialize_daily_logs_struct(daily_logs_struct)
-
         chart_js_path = js_modules_utils.get_lib_src(ModulesConfig.CHART_JS_NAME)
 
         return render_template("log_graphs.html",
                                log_type=log_type,
                                logs_pagination=paginated_days_data,
-                               paginated_daily_data=serialized_daily_logs_struct,
+                               paginated_daily_data=daily_logs_struct,
                                chart_js_path=chart_js_path)
 
     else:

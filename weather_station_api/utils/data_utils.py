@@ -44,34 +44,23 @@ def get_logged_data_struct(model):
 
 
 def get_daily_logs_struct(logged_days, log_type):
-    struct = {}
+    logged_days_data = []
 
     for log_day in logged_days:
         logs_by_type = log_day.get_logs_by_type(log_type)
+        day_logged_data = []
 
         for log in logs_by_type:
-            log_day_date = log.date.strftime(DateConsts.DAY_FORMATTING)
-
-            if log_day_date not in struct.keys():
-                struct[log_day_date] = []
-
-            struct[log_day_date].append({
-                "time": log.date.strftime(DateConsts.HOUR_FORMATTING),
+            day_logged_data.append({
+                "time": log.date.strftime(DateConsts.HOUR_FORMATTING_WO_SECONDS),
                 "value": log.value
             })
 
-    return struct
+        logged_days_data.append(
+            {
+                "day": log_day.date.strftime(DateConsts.DAY_FORMATTING),
+                "data": day_logged_data
+            }
+        )
 
-
-def serialize_daily_logs_struct(logs_struct):
-    serialized_struct = []
-
-    for day, data in logs_struct.items():
-        day_data = {
-            "day": day,
-            "data": data
-        }
-
-        serialized_struct.append(day_data)
-
-    return serialized_struct
+    return logged_days_data

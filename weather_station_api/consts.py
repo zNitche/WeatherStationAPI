@@ -18,6 +18,7 @@ class DataConsts:
 
 class DateConsts:
     HOUR_FORMATTING = "%H:%M:%S"
+    HOUR_FORMATTING_WO_SECONDS = "%H:%M"
     DAY_FORMATTING = "%d-%m-%Y"
 
 
